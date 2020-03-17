@@ -33,8 +33,6 @@ class SongDetailActivity : AppCompatActivity() {
     private var oTime = 0
     var sTime = 0
     var eTime = 0
-    var fTime = 5000
-    var bTime = 5000
     private val hdlr = Handler()
     var mPlayer = MediaPlayer()
     lateinit var txtName:TextView
@@ -46,7 +44,8 @@ class SongDetailActivity : AppCompatActivity() {
         setSupportActionBar(toolbar_songdetail)
         supportActionBar?.setTitle("Detail")
 
-        var list:ArrayList<Song> = PlaylistActivity.list_song_ofPlaylist
+        var list:ArrayList<Song> = arrayListOf()
+            list    = PlaylistActivity.list_song_ofPlaylist
         //var position = intent.getIntExtra("POSITION", 0)
 
         txtName = findViewById(R.id.txt_songName)
@@ -152,6 +151,11 @@ class SongDetailActivity : AppCompatActivity() {
         }
 
 
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        mPlayer.stop()
     }
 
     private fun PlayMusic() {

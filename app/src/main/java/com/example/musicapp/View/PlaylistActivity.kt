@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.example.musicapp.Adapter.Queries
 import com.example.musicapp.Adapter.RecyclerViewAdapter
 import com.example.musicapp.Model.Song
 import com.example.musicapp.R
@@ -55,6 +56,7 @@ class PlaylistActivity : AppCompatActivity() {
             list_songID = intent.getSerializableExtra("LIST_SONG") as ArrayList<String>  // MainActivity
             getSongById(list_songID)
         }else {
+            myPlayListSongs = Queries.array_songMyList
             adapter = RecyclerViewAdapter(myPlayListSongs)
             recyclerviewPlaylist.layoutManager = LinearLayoutManager(this)
             recyclerviewPlaylist.adapter = adapter
@@ -66,6 +68,8 @@ class PlaylistActivity : AppCompatActivity() {
             startActivity(intent)
         }
     }
+
+
 
     private fun getSongById(list_songID: ArrayList<String>) {
         list_song_ofPlaylist.clear()

@@ -9,6 +9,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.widget.GridView
 import com.example.musicapp.Adapter.PlaylistAdapter
+import com.example.musicapp.Adapter.Queries
 import com.example.musicapp.Common.common.toast
 import com.example.musicapp.Model.Playlist
 import com.example.musicapp.Model.Song
@@ -90,9 +91,12 @@ class MainActivity : AppCompatActivity() {
                 startActivity(intent)
             }
             R.id.mnu_playlist -> {
-                    var intent= Intent(this, PlaylistActivity::class.java)
-                    intent.putExtra("IS_MY_LIST", true)
-                    startActivity(intent)
+                    var havePlaylist:Boolean = Queries.IsHavePlaylist()
+                    if(havePlaylist) {
+                        var intent = Intent(this, PlaylistActivity::class.java)
+                        intent.putExtra("IS_MY_LIST", havePlaylist)
+                        startActivity(intent)
+                    }
             }
             R.id.mnu_logout ->{
                 mAuthor.signOut()

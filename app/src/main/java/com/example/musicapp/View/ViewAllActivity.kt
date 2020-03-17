@@ -26,7 +26,11 @@ import android.graphics.Bitmap
 import android.graphics.drawable.PictureDrawable
 import android.text.Layout
 import android.view.*
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.SearchView
+import com.example.musicapp.Adapter.Queries
 import com.example.musicapp.Common.SharedPreference
 import com.example.musicapp.Common.common.toast
 import com.example.musicapp.R
@@ -55,23 +59,29 @@ class ViewAllActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(com.example.musicapp.R.layout.activity_view_all)
+        setContentView(R.layout.activity_view_all)
         setSupportActionBar(toobar_viewAll)
+        val searchIcon = sv_song.findViewById<ImageView>(R.id.search_mag_icon)
+        searchIcon.setColorFilter(Color.BLUE)
+
+
+        val cancelIcon = sv_song.findViewById<ImageView>(R.id.search_close_btn)
+        cancelIcon.setColorFilter(Color.BLUE)
+
+
+        val textView = sv_song.findViewById<TextView>(R.id.search_src_text)
+        textView.setTextColor(Color.BLUE)
 
         supportActionBar?.setTitle("View all list")
         recyclerviewSong = findViewById(com.example.musicapp.R.id.rv_listSong)
-        try {
-            if(SharedPreference(this).getValueString("MY_LIST")!!.isNotEmpty()){
-                isCreated =  true
-            }
-        }catch (ex:Exception){
-            //toast(ex.message.toString())
-        }
+
+        isCreated = Queries.IsHavePlaylist()
 
         listSongs.clear()
         getAllSong()
 
     }
+
 
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -82,12 +92,9 @@ class ViewAllActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId){
-            R.id.mnu_search -> {
-                toast("Search")
-            }
             R.id.mnu_create ->{
                 if(isCreated){
-                    toast("You aldreadly have a playlist")
+                    toast("You alreadly have a playlist")
                 }else {
                     displayDialog()
 
@@ -147,6 +154,19 @@ class ViewAllActivity : AppCompatActivity() {
                         //Luu vao adapter
                         adapter = RecyclerViewAdapter(listSongs)
                         recyclerviewSong.layoutManager = LinearLayoutManager(this)
+                        recyclerviewSong.setHasFixedSize(true)
+
+                        sv_song.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                            override fun onQueryTextSubmit(query: String?): Boolean {
+                                return false
+                            }
+
+                            override fun onQueryTextChange(newText: String?): Boolean {
+                                adapter.filter.filter(newText)
+                                return false
+                            }
+
+                        })
                         recyclerviewSong.adapter = adapter
                         adapter.notifyDataSetChanged()
                     } else {
