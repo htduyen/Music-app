@@ -15,7 +15,10 @@ import com.bumptech.glide.Glide
 import com.example.musicapp.R
 import com.example.musicapp.View.PlaylistActivity
 import com.example.musicapp.View.SongDetailActivity
+import com.example.musicapp.View.ViewAllActivity
+import com.example.musicapp.View.ViewAllActivity.Companion.listSongs
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 
 
@@ -60,13 +63,22 @@ class RecyclerViewAdapter()  : RecyclerView.Adapter<RecyclerViewAdapter.SongView
                 itemView.context.startActivity(intent)
             }
             itemView.setOnLongClickListener {
+                if(ViewAllActivity.isCreated) {
+                    PlaylistActivity.myPlayListSongs.add(song)
+                    var db = FirebaseFirestore.getInstance()
+                    var user = FirebaseAuth.getInstance().currentUser?.uid
 
-                PlaylistActivity.myPlayListSongs.add(song)
-//                var db = FirebaseFirestore.getInstance()
-//                var user = FirebaseAuth.getInstance().currentUser
-//                val docRef = db.collection("USER").document(user!!.uid)
-//                docRef.collection("USER_PLAYLIST").document("list").update("id_song", song.)
-                Toast.makeText(itemView.getContext(), "Added to my playlist", Toast.LENGTH_SHORT).show()
+                        val docRef = db.collection("USER").document(user.toString())
+                        docRef.collection("USER_PLAYLIST").document("list")
+                            .update("id_songs", FieldValue.arrayUnion(song.id))
+
+//                    } catch (ex: KotlinNullPointerException) {
+//                        Log.d("Exception", "Exception + ${ex.message}")
+//                    }
+                    Toast.makeText(itemView.getContext(), "Add my playlist", Toast.LENGTH_SHORT).show()
+                }else{
+                    Toast.makeText(itemView.context, "You don't create playlist", Toast.LENGTH_SHORT).show()
+                }
                 return@setOnLongClickListener true
             }
         }

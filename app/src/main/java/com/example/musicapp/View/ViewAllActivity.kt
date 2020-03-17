@@ -35,6 +35,7 @@ import com.google.firebase.auth.FirebaseAuth
 import kotlinx.android.synthetic.main.activity_view_all.*
 import kotlinx.android.synthetic.main.dialog_create_playlist.*
 import kotlinx.android.synthetic.main.dialog_create_playlist.view.*
+import java.lang.Exception
 
 
 class ViewAllActivity : AppCompatActivity() {
@@ -43,14 +44,14 @@ class ViewAllActivity : AppCompatActivity() {
 
     var db:FirebaseFirestore = FirebaseFirestore.getInstance()
     lateinit var recyclerviewSong: RecyclerView
-    var user = FirebaseAuth.getInstance()
+    var user = FirebaseAuth.getInstance().currentUser
+    var name:String = ""
 
     companion object{
         var listSongs:ArrayList<Song> = arrayListOf()
         var isCreated: Boolean = false
     }
     private lateinit var adapter: RecyclerViewAdapter
-    private val p = Paint()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,9 +60,14 @@ class ViewAllActivity : AppCompatActivity() {
 
         supportActionBar?.setTitle("View all list")
         recyclerviewSong = findViewById(com.example.musicapp.R.id.rv_listSong)
-        if(SharedPreference(this).getValueString("MY_LIST")!!.isNotEmpty()){
-            isCreated =  true
+        try {
+            if(SharedPreference(this).getValueString("MY_LIST")!!.isNotEmpty()){
+                isCreated =  true
+            }
+        }catch (ex:Exception){
+            //toast(ex.message.toString())
         }
+
         listSongs.clear()
         getAllSong()
 
@@ -79,19 +85,12 @@ class ViewAllActivity : AppCompatActivity() {
             R.id.mnu_search -> {
                 toast("Search")
             }
-            R.id.mnu_playlist -> {
-                if(isCreated){
-                    var intent= Intent(this, PlaylistActivity::class.java)
-                    startActivity(intent)
-                }else{
-                    toast("You don't have playlist!")
-                }
-            }
             R.id.mnu_create ->{
                 if(isCreated){
                     toast("You aldreadly have a playlist")
                 }else {
                     displayDialog()
+
                 }
             }
         }
@@ -110,19 +109,16 @@ class ViewAllActivity : AppCompatActivity() {
         mDialogView.btn_create.setOnClickListener {
             mAlertDialog.dismiss()
             isCreated = true
-            val name = mDialogView.edtNamePlaylistCreate.text.toString()
-            SharedPreference(this).saveString("MY_LIST", name)
-
-            val dataPlaylist = hashMapOf(
-                "name_playlist" to name,
-                "is_song" to arrayListOf<String>()
+            name = mDialogView.edtNamePlaylistCreate.text.toString()
+            toast(name)
+            //SharedPreference(this).saveString("MY_LIST", name)
+            var data = hashMapOf(
+                "name_playlist" to  name
             )
-            val docRef = db.collection("USER").document(user.currentUser!!.uid)
-                docRef.collection("USER_PLAYLIST").document("list")
-                .set(dataPlaylist)
-                .addOnSuccessListener { toast("Playlist added successfully!") }
-                .addOnFailureListener {toast("Error writing document") }
-            toast("Added")
+            var docRef = db.collection("USER").document(user!!.uid)
+            docRef.collection("USER_PLAYLIST").document("list").set(data)
+
+            toast("Created")
         }
         //cancel button click of custom layout
         mDialogView.btn_cancel.setOnClickListener {

@@ -6,9 +6,6 @@
         android:id="@+id/mnu_search"
         android:icon="@android:drawable/ic_search_category_default"
         app:showAsAction="always"/>
-    <item android:title="My playlist"
-        android:id="@+id/mnu_playlist"
-        android:icon="@drawable/ic_playlist"/>
         android:icon="@android:drawable/ic_menu_search"/>
     <item android:title="Create playlist"
         android:id="@+id/mnu_create"

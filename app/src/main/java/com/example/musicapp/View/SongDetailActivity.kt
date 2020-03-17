@@ -115,9 +115,6 @@ class SongDetailActivity : AppCompatActivity() {
 
                 }
             }
-//            else {
-//                btn_next.isEnabled = false
-//            }
 
             if (position > 0) {
                 btn_previous.setOnClickListener {
@@ -141,9 +138,6 @@ class SongDetailActivity : AppCompatActivity() {
                     PlayMusic()
                 }
             }
-//            else {
-//                btn_previous.isEnabled = false
-//            }
         }
         btn_play.setOnClickListener {
             //val url = song.url_song
